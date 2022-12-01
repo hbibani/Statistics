@@ -1,0 +1,37 @@
+
+GBR2013 = read.csv(file.choose())
+
+
+GBR2013$QualityOfLife
+GBR2013$WantToProtect
+----
+#(a)
+----
+Ho : p(correlation) = 0
+Ha : p(correlation) > 0
+
+----
+#(b)
+----
+cor.Value.2013 = cor(GBR2013$QualityOfLife,GBR2013$WantToProtect, use="complete.obs")
+cor.Value.2013 
+
+b = 10000
+rand.dist = rep(NA, b)
+for (i in 1:b) {
+  shuffle = sample(GBR2013$QualityOfLife)
+  rand.dist[i] = cor(GBR2013$WantToProtect,
+                     shuffle, use="complete.obs" )
+}
+hist(rand.dist)
+sd(rand.dist)
+
+
+----------------
+#(c) Alpha = 10
+----------------
+pvalue = mean(rand.dist >= cor.Value.2013 )
+pvalue
+
+#Do not Reject. 
+

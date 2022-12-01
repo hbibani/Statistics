@@ -1,0 +1,90 @@
+
+
+----------------------------------------------------------------------------------------------------------------------
+#Part 4 (a)
+----------------------------------------------------------------------------------------------------------------------
+
+
+GBR2013 = read.csv(file.choose())
+GBR2017 = read.csv(file.choose())
+
+-------
+#Table:
+-------
+
+table.2013 = table(GBR2013$ClimateChangeView)
+table.2013
+
+
+table.2017 = table(GBR2017$ClimateChangeView)
+table.2017
+
+-------------------------
+#Prop Table[manual work]:
+-------------------------
+
+proportion.table2013 = prop.table(table(GBR2013$ClimateChangeView))
+proportion.table2013
+
+expectedCounts = proportion.table2013 * 92
+
+chisq.test = sum(((table.2017 - expectedCounts)^2 )/ expectedCounts)
+
+proportion.table2017 = prop.table(table(GBR2017$ClimateChangeView))
+
+
+-------------------------------
+#Chi-squared goodness for fit
+-------------------------------
+
+#H0: That there is no change between proportions year 2013 and 2017 [assume proportions will stay the same]
+#Ha : That there is some probability that is wrong
+
+chisq.test( table(GBR2017$ClimateChangeView), p = c(0.5,0.17796610,0.22881356, 0.04237288, 0.05084746))
+
+
+
+-----------------------------------------------------------------------------------------------------------------------
+#Part 4(b)
+-----------------------------------------------------------------------------------------------------------------------
+
+#H0 : Attitude on climate change is not associated with the year
+#Ha : Attitude on climate change is associated with the year
+
+
+unifiedSample=c(GBR2013$ClimateChangeView,GBR2017$ClimateChangeView)
+
+tab.unified = table(unifiedSample)
+tab.unified
+
+prop.unified = prop.table(tab.unified)
+prop.unified
+
+
+expected.2017 = prop.unified * 92
+expected.2017
+expected.2013 = prop.unified * 118
+expected.2013
+
+Chisqd.2017 = ((table.2017 - expected.2017)^2 )/ expected.2017
+Chisqd.2017
+chisqd.2013 = ((table.2013 - expected.2013)^2 ) / expected.2013
+chisqd.2013
+
+chisqd.association = sum(Chisqd.2017 + chisqd.2013)
+chisqd.association
+
+pchisq(chisqd.association, 4, lower.tail=FALSE)
+
+x = GBR2013$ClimateChangeView
+y = GBR2017$ClimateChangeView
+
+
+----------------------------------------------------------------------------------------------------------------------
+#4(C)
+----------------------------------------------------------------------------------------------------------------------
+
+#Section (a) is more suitable because we are testing to see if there is any change. Then we want to see if the proportions are different from the proportion of the year before hand. A test for association, wants to test if the years are associated with the change. This doesn't check if the proportions have changed between the two years.
+
+
+#The association tests for the values in comparison to the average. 

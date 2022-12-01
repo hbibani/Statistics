@@ -1,0 +1,108 @@
+GBR2013 = read.csv(file.choose())
+GBR2017 = read.csv(file.choose())
+
+-----
+#(2b)
+
+-----
+
+mean.2013.6 = mean(GBR2013$Optimistic >= 6, na.rm=TRUE) 
+
+mean.2017.6 = mean(GBR2017$Optimistic >= 6, na.rm=TRUE)
+
+mean.2017.6 - mean.2013.6 
+
+----
+#(i)  
+----
+
+#Ho : p(2013) - p(2017) = 0
+#Ha : p(2013) - p(2017) != 0
+
+prop.test(c(72, 55), c(119, 95), correct = FALSE)
+prop.test(c(72, 55), c(119, 95), correct = TRUE)
+
+
+
+#Prop-test has it own unique method, and I had thought to add a third(z-test) to make some clarifications
+
+table(GBR2017$Optimistic)
+table(GBR2013$Optimistic)
+
+pooledtable = table(GBR2017$Optimistic) + table(GBR2013$Optimistic)
+pooledtable 
+
+
+pooled.proportion = 127/214
+pooled.proportion
+
+p.1minusp = 0.5934579*0.4065421
+p.1minusp 
+
+se.pooled.proprotion = sqrt(p.1minusp/119  + p.1minusp/ 95 )
+se.pooled.proprotion
+
+zscore.pooled = (mean.2013.6 - mean.2017.6) / se.pooled.proprotion
+zscore.pooled
+
+pvalue = 2*(1 - pnorm(zscore.pooled, 0, 1))
+pvalue
+
+-----
+#(ii)
+-----
+
+a=c(3,4,5)
+a
+b= c(2)
+b
+c = a[-b]
+c
+
+unifiedSample=c(GBR2013$Optimistic,GBR2017$Optimistic)
+b=(sample(length(a),119))
+divided.group1 = a[b]
+divided.group2 = a[-b]
+
+z = length(unifiedSample)
+
+-----------------------------------------------------------
+#Method 1 [True Method] - even distribution of the values [follows formula]
+-----------------------------------------------------------
+
+#The formula for the se splits the sizes of the sample into two seperate calculations
+#I would expect that splitting the samples in the same manner according to the formula will give 
+#a similar Standard error. We have two methods that are shown below which will demonstrate this phenomena.
+
+
+b = 10000
+rand.dist = rep(NA, b)
+for (i in 1:b) {
+unifiedSample=c(GBR2013$Optimistic,GBR2017$Optimistic)
+boot.samp=(sample(length(unifiedSample),119, replace = FALSE))
+group.size119 = unifiedSample[boot.samp]
+group.size95 = unifiedSample[-boot.samp]
+rand.dist[i] = mean(group.size119  >= 6, na.rm=TRUE) - mean(group.size95 >=6, na.rm=TRUE) 
+}
+hist(rand.dist)
+sd(rand.dist)
+
+prop.difference = mean.2013.6 - mean.2017.6
+
+pvalue2 = 2*mean(rand.dist >= prop.difference)
+pvalue2
+
+----------------------------------------------------
+#Method 2 Randomization
+----------------------------------------------------
+b = 10000
+rand.dist = rep(NA, b)
+for (i in 1:b) {
+rand.dist[i] = (rbinom(1, size = 119, prob = 0.5934579)/119) - (rbinom(1, size = 95, prob = 0.5934579)/95)
+}
+hist(rand.dist)
+sd(rand.dist)
+
+
+
+

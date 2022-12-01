@@ -1,0 +1,74 @@
+----------------------------------------
+#Part 1 - Nymber of Years in GBR tourism
+----------------------------------------
+
+dataname = read.csv(file.choose())
+
+----
+#(a)
+----
+
+hist(dataname$Years)
+
+mean.Years2013 = mean(dataname$Years)
+
+#the data is right skewed
+
+-----
+#(b)
+-----
+
+b = 10000
+boot.dist = rep(NA, b)
+for (i in 1:b){
+boot.sample = sample(119, replace=TRUE)
+boot.dist[i] = mean(dataname$Years[boot.sample])
+}
+hist(boot.dist) 
+SE.year2013 = sd(boot.dist)
+SE.year2013
+
+CI.99.Bootstrap.Upper = mean.Years2013 + 2.576*(SE.year2013)
+CI.99.Bootstrap.Upper
+
+CI.99.Bootstrap.Lower = mean.Years2013 - 2.576*(SE.year2013)
+CI.99.Bootstrap.Lower
+
+# The 99% CI is between 12.172 and 16.68154
+
+----
+#(c)
+----
+
+#CLT states that SE using the formula SE = s / sqrt(n) applies when the size is greater or equal to 30
+
+
+sd.Years2013 = sd(dataname$Years)
+sd.Years2013
+
+SE.CLT.Years2013 = sd.Years2013 / sqrt(119)
+SE.CLT.Years2013
+
+#We notice that our SE is almost identical to the one we used using the bootstrap method;
+# We can infer that because the SE is almost identical, the CI is going to be very similar
+
+#We know that when we are dealing with means, it follows a t-distribution; so our value for z
+#would be replaced by our t-value
+
+tvalue.Years2013 = qt(0.995, 119)
+tvalue.Years2013
+
+CI.99t.Upper = mean.Years2013 + tvalue.Years2013*SE.CLT.Years2013
+CI.99t.Upper
+
+CI.99t.Lower =mean.Years2013 - tvalue.Years2013*SE.CLT.Years2013
+CI.99t.Lower 
+
+#The 99% CI for both of them are almost identical 
+
+#Bootstrapping method = 12.172 and 16.68154
+#CLT method = 12.10794 and 16.74921
+
+
+
+
